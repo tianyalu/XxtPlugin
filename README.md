@@ -213,6 +213,12 @@ public BaseDexClassLoader(String dexPath, File optimizedDirectory,
 
 插件化用宿主调用插件的方法，从根本上来讲要用到反射，但是插件本质上来讲是个`apk`，而一个应用是不能直接反射获取另一个应用中`dex`文件中的类的，所以核心在于将插件的`dex`合并到宿主的`dex`（`dexElements`数组）中，如此方能通过反射实现方法调用。
 
+![image](https://github.com/tianyalu/XxtPlugin/raw/master/show/theory.png)  
+
+> 插件化一般把宿主放在前面；
+> 热修复一般把dex文件放在前面（一个应用）；
+> dex文件生成命令：`dx --dex --output=output.dex input.class` （`android/Sdk/build-tools/`目录下）
+
 ### 2.2 实现步骤
 
 BaseDexClassLoader.findClass() --> DexPathList.findClass() --> element.findClass()
@@ -225,13 +231,13 @@ dexFile 多个dex文件 --> dexElements
 
 **怎么通过反射把插件的dex文件放到宿主的dex文件中？**
 
-1. 获取宿主的dexElements -> dexElementsField -> DexPathList对象 -> dexPathList的Field -> BaseDexClassLoader对象 -> 宿主和插件的类加载器
+1. 获取宿主的`PathClassLoader`类加载器，然后通过反射获取宿主的`dexElements `-> `dexElementsField `-> `DexPathList`对象 -> `dexPathList`的`Field` -> `BaseDexClassLoade`r对象 -> 宿主和插件的类加载器；
 
-2. 获取插件的dexElements
+2. 创建插件的`DexClassLoader`类加载器，然后通过反射获取插件的`dexElements`；
 
-3. 合并宿主的dexElements和插件的dexElements
+3. 合并宿主的`dexElements`和插件的`dexElements`，生成新的`Element[]`；
 
-4. 将合并的dexElements赋值到宿主的dexElements
+4. 将合并的`Elements[]`赋值到宿主的`dexElements`。
 
 插件的dex
 
