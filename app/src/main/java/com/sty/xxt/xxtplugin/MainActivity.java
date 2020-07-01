@@ -1,6 +1,7 @@
 package com.sty.xxt.xxtplugin;
 
 import androidx.appcompat.app.AppCompatActivity;
+import dalvik.system.DexClassLoader;
 
 import android.Manifest;
 import android.app.Activity;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
             Class<?> clazz = Class.forName("com.sty.xxt.childplugin.Test");
             Method print = clazz.getMethod("print");
             print.invoke(null);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

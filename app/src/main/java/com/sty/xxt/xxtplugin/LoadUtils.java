@@ -14,14 +14,16 @@ public class LoadUtils {
     private static final String apkPath = Environment.getExternalStorageDirectory().getAbsolutePath()
             + "/sty/plugin/childplugin-debug.apk";
     public static void loadClass(Context context) {
-        //获取宿主的dexElements -> dexElementsField -> DexPathList对象 -> pathList的Field -> BaseDexClassLoader对象 -> 宿主和插件的类加载器
-
+        // 获取宿主的dexElements -> dexElementsField -> DexPathList对象 -> dexPathList的Field
+        // -> BaseDexClassLoader对象 -> 宿主和插件的类加载器
 
         try {
+            //参考：http://androidos.net.cn/android/7.1.1_r28/xref/libcore/dalvik/src/main/java/dalvik/system/DexPathList.java 65行
             Class<?> dexPathListClass = Class.forName("dalvik.system.DexPathList");
             Field dexElementsField = dexPathListClass.getDeclaredField("dexElements");
             dexElementsField.setAccessible(true);
 
+            //参考：http://androidos.net.cn/android/7.1.1_r28/xref/libcore/dalvik/src/main/java/dalvik/system/BaseDexClassLoader.java 50行
             Class<?> classLoaderClass = Class.forName("dalvik.system.BaseDexClassLoader");
             Field pathListField = classLoaderClass.getDeclaredField("pathList");
             pathListField.setAccessible(true);
@@ -38,7 +40,6 @@ public class LoadUtils {
             ClassLoader pluginClassLoader = new DexClassLoader(apkPath,
                     context.getCacheDir().getAbsolutePath(), null, pathClassLoader);
             Object pluginPathList = pathListField.get(pluginClassLoader);
-
             //目的：dexElements的对象
             Object[] pluginDexElements = (Object[]) dexElementsField.get(pluginPathList);
 
@@ -51,7 +52,7 @@ public class LoadUtils {
             System.arraycopy(pluginDexElements, 0, newElements, hostDexElements.length, pluginDexElements.length);
 
             //赋值到宿主的dexElements
-            // hostDexElements = newElements
+            // hostPathList.dexElements = newElements
             dexElementsField.set(hostPathList, newElements);
         } catch (Exception e) {
             Log.e("sty", "exception");
