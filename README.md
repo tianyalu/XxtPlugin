@@ -185,7 +185,7 @@ public BaseDexClassLoader(String dexPath, File optimizedDirectory,
 
 双亲委派机制的核心在于**优先加载系统类**，优点如下：
 
-> 1. 避免重复加载，当父加载器已经加载了该类的时候，就没有必要用`ClassLoader`再加载一次；
+> 1. 避免重复加载，当父加载器已经加载了该类的时候，就没有必要用`ClassLoader`再加载一次；  
 > 2. 安全考虑，防止核心API被随意篡改。
 
 由此可见我们是不能加载一个自定义类，来替换系统的类（如`String`类）的。  
@@ -196,11 +196,11 @@ public BaseDexClassLoader(String dexPath, File optimizedDirectory,
 
 代码角度：  
 
-![image](https://github.com/tianyalu/XxtPlugin/raw/master/show/class_loader_process_parent1.png)  
+![image](https://github.com/tianyalu/XxtPlugin/raw/master/show/class_loader_process_parent2.png)  
 
 参考：[http://androidos.net.cn/android/7.1.1_r28/xref/libcore/ojluni/src/main/java/java/lang/ClassLoader.java]  (http://androidos.net.cn/android/7.1.1_r28/xref/libcore/ojluni/src/main/java/java/lang/ClassLoader.java) 377行
 
-> PathClassLoader 构造方法，dexPath -- dex文件
+> PathClassLoader 构造方法，dexPath -- dex文件  
 > BootCalssLoader(类文件)  SDK类加载器
 
 **问题：为什么`DexClassLoader`的`parent`不传入`BaseDexClassLoader`?**  
@@ -292,6 +292,6 @@ public class LoadUtils {
 
 ## 三、Tips
 
-* android源码查看地址：[http://androidos.net.cn/sourcecode](http://androidos.net.cn/sourcecode)  
+* `Android`源码查看地址：[http://androidos.net.cn/sourcecode](http://androidos.net.cn/sourcecode)  
 * `AndroidStudio`可安装插件：`AndroidSourceViewer` 方便查看源码
 
